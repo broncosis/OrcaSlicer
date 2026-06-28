@@ -3918,6 +3918,14 @@ void TabFilament::build()
         line.append_option(optgroup->get_option("nozzle_temperature_range_high"));
         optgroup->append_line(line);
 
+        {
+            Line id_line = { L("Filament ID"), L("Internal identifier for this filament preset") };
+            id_line.append_widget([this](wxWindow* parent) {
+                return description_line_widget(parent, &m_filament_id_line);
+            });
+            optgroup->append_line(id_line);
+        }
+
         optgroup->m_on_change = [this, optgroup](t_config_option_key opt_key, boost::any value) {
             DynamicPrintConfig &filament_config = m_preset_bundle->filaments.get_edited_preset().config;
 
@@ -4259,6 +4267,10 @@ void TabFilament::update_description_lines()
 
     if (m_active_page->title() == "Cooling" && m_cooling_description_line)
         m_cooling_description_line->SetText(from_u8(PresetHints::cooling_description(m_presets->get_edited_preset())));
+    if (m_active_page->title() == "Filament" && m_filament_id_line) {
+        const std::string& fid = m_presets->get_edited_preset().filament_id;
+        m_filament_id_line->SetText(fid.empty() ? _L("(none)") : from_u8(fid));
+    }
     //BBS
     //if (m_active_page->title() == "Filament" && m_volumetric_speed_description_line)
     //    this->update_volumetric_flow_preset_hints();
@@ -4399,6 +4411,7 @@ void TabFilament::clear_pages()
 
     m_volumetric_speed_description_line = nullptr;
 	m_cooling_description_line = nullptr;
+    m_filament_id_line = nullptr;
 
     //BBS: GUI refactor
     m_overrides_options.clear();
