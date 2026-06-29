@@ -3920,9 +3920,9 @@ void TabFilament::build()
 
         {
             Line id_line = { L("Filament ID"), L("Internal identifier for this filament preset") };
-            id_line.append_widget([this](wxWindow* parent) {
+            id_line.widget = [this](wxWindow* parent) {
                 return description_line_widget(parent, &m_filament_id_line);
-            });
+            };
             optgroup->append_line(id_line);
         }
 
